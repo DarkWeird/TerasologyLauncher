@@ -1,0 +1,25 @@
+name: JavaFX + jlink
+
+on: [push]
+
+jobs:
+  build:
+    strategy:
+      matrix: 
+        os: [ macos-latest, windows-latest, ubuntu-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v1
+    - name: set up JDK 1.11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.11
+    - name: Build with Gradle on ${{ matrix.os }}
+      run: ./gradlew jlinkZip
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        # Artifact name
+        name: TerasologyLauncher-${{ matrix.os }}.zip 
+        # Directory containing files to upload
+        path: build/image.zip
